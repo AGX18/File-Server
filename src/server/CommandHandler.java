@@ -25,7 +25,7 @@ public class CommandHandler {
 interface Command {
     static String STORAGE = "src/server/data";
 
-    public void execute(Socket socket);
+    void execute(Socket socket);
 
 }
 
