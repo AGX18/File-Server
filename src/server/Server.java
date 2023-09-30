@@ -1,14 +1,12 @@
-package src.server;
+package server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
 
 public class Server {
     CommandHandler commandHandler = new CommandHandler();
-    public HashSet<String> files = new HashSet<>();
 
     String address = "127.0.0.1";
     int port = 23456;
@@ -17,14 +15,16 @@ public class Server {
         System.out.println("Server started!");
     }
 
-    public String executeCommand(String command, String fileName) {
+    public void executeCommand(String command, Socket socket) {
+        commandHandler.setSocket(socket);
+
         switch (command) {
-            case "get" -> {
+            case "get" -> { // get a file
                 commandHandler.setCommand(new getCommand());
 
             }
-            case "add" -> {
-                commandHandler.setCommand(new addCommand());
+            case "create" -> { // create a file
+                commandHandler.setCommand(new createCommand());
             }
             case "delete" -> {
                 commandHandler.setCommand(new deleteCommand());
@@ -33,11 +33,9 @@ public class Server {
                 //System.out.println("Server stopped!");
                 System.exit(0);
             }
-            default -> {
-                return ("Unknown command");
-            }
         }
-        return commandHandler.executeCommand(fileName, files);
+
+        commandHandler.executeCommand(socket);
     }
 
 
@@ -48,20 +46,13 @@ public class Server {
             DataInputStream input = new DataInputStream(socket.getInputStream());
             DataOutputStream output = new DataOutputStream(socket.getOutputStream())
         ) {
-//            while(true) {
+            while (true) {
                 String command = input.readUTF();
-                System.out.println("Received: " + command);
-                String[] clientInput = command.split(" ");
-                String result;
-                if(command.equals("Give me everything you have!")) {
-                    result = "All files were sent!";
+                if (command.equals("exit")) {
+                    break;
                 }
-                else {
-                    result = executeCommand(clientInput[0], clientInput[1]);
-                }
-                output.writeUTF(result);
-                System.out.println("Sent: " + result);
-//            }
+                executeCommand(command, socket);
+            }
         }
         catch(Exception e) {
             System.out.println("Something went wrong: " + e.getMessage());
