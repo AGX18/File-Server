@@ -7,8 +7,10 @@ import java.io.File;
 public class Main {
 
     public static void main(String[] args) {
-        File file = new File("F:\\JavaProjects\\File Server\\File Server\\task\\src\\server\\data");
-        boolean createdNewDirectory = file.mkdirs();
+        File file = new File("src/server/data");
+        if(!file.exists()) {
+            boolean createdNewDirectory = file.mkdirs();
+        }
 
         Server server = new Server();
 

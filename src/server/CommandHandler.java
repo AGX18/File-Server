@@ -23,7 +23,7 @@ public class CommandHandler {
 }
 
 interface Command {
-    static String STORAGE = "F:\\JavaProjects\\File Server\\File Server\\task\\src\\server\\data";
+    static String STORAGE = "src/server/data";
 
     public void execute(Socket socket);
 
